@@ -6,8 +6,6 @@
 
 namespace rmrevin\yii\module\File\component;
 
-use yii\helpers\FileHelper;
-
 /**
  * Class ExternalResource
  * @package rmrevin\yii\module\File\component
@@ -52,7 +50,7 @@ class ExternalResource extends AbstractResource implements ResourceInterface
      */
     public function getMime()
     {
-        return FileHelper::getMimeType($this->temp);
+        return \yii\helpers\FileHelper::getMimeType($this->temp);
     }
 
     /**

@@ -6,8 +6,6 @@
 
 namespace rmrevin\yii\module\File\component;
 
-use yii\helpers\FileHelper;
-
 /**
  * Class InternalResource
  * @package rmrevin\yii\module\File\component
@@ -16,17 +14,17 @@ class InternalResource extends AbstractResource implements ResourceInterface
 {
 
     /** @var string */
-    private $file;
+    private $temp;
 
     /**
      * @param string $source
      */
     public function setSource($source)
     {
-        $this->file = $source;
+        $this->temp = $source;
 
-        if (!file_exists($this->file)) {
-            throw new \RuntimeException('Источник ресурса недоступен');
+        if (!file_exists($this->temp) || !is_file($this->temp)) {
+            throw new \RuntimeException('External resource not available');
         }
     }
 
@@ -35,7 +33,7 @@ class InternalResource extends AbstractResource implements ResourceInterface
      */
     public function getName()
     {
-        return basename($this->file);
+        return basename($this->temp);
     }
 
     /**
@@ -43,7 +41,7 @@ class InternalResource extends AbstractResource implements ResourceInterface
      */
     public function getSize()
     {
-        return filesize($this->file);
+        return filesize($this->temp);
     }
 
     /**
@@ -52,7 +50,7 @@ class InternalResource extends AbstractResource implements ResourceInterface
      */
     public function getMime()
     {
-        return FileHelper::getMimeType($this->file);
+        return \yii\helpers\FileHelper::getMimeType($this->temp);
     }
 
     /**
@@ -60,7 +58,7 @@ class InternalResource extends AbstractResource implements ResourceInterface
      */
     public function getTemp()
     {
-        return $this->file;
+        return $this->temp;
     }
 
     public function clear()

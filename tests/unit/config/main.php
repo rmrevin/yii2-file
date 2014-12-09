@@ -12,4 +12,10 @@ return [
             'class' => '\rmrevin\yii\module\File\Module',
         ]
     ],
+    'components' => [
+        'db' => [
+            'class' => '\yii\db\Connection',
+            'dsn' => 'sqlite::memory:',
+        ],
+    ],
 ];

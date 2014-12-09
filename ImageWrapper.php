@@ -85,9 +85,8 @@ class ImageWrapper
         \Yii::trace('resize file', __METHOD__);
 
         $this->mark(__METHOD__, func_get_args());
-
         $this->save(function () use ($width, $height, $filter) {
-            Image::resize($this->File->getAbsolutePath(), $width, $height, $filter);
+            return Image::resize($this->File->getAbsolutePath(), $width, $height, $filter);
         });
 
         return $this;

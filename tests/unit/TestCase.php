@@ -7,6 +7,7 @@
 namespace rmrevin\yii\module\file\tests\unit;
 
 use yii\helpers\ArrayHelper;
+use yii\helpers\FileHelper;
 
 /**
  * Class TestCase
@@ -21,7 +22,25 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mock_application();
+        $this->mockApplication();
+
+        $lines = explode(';', file_get_contents(\Yii::getAlias('@yiiunit/data/schema.sql')));
+
+        foreach ($lines as $line) {
+            if (trim($line) !== '') {
+                \Yii::$app->getDb()->createCommand($line)->execute();
+            }
+        }
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+
+//        FileHelper::removeDirectory(\Yii::$app->getModule('file')->upload_path);
+//        FileHelper::removeDirectory(\Yii::$app->getModule('file')->storage_path);
+
+        $this->destroyApplication();
     }
 
     /**
@@ -29,10 +48,10 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      * The application will be destroyed on tearDown() automatically.
      * @param string $appClass
      */
-    protected function mock_application($appClass = '\yii\console\Application')
+    protected function mockApplication($appClass = '\yii\console\Application')
     {
         // for update self::$params
-        $this->get_param('id');
+        $this->getParam('id');
 
         /** @var \yii\console\Application $app */
         new $appClass(self::$params);
@@ -44,7 +63,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      * @param mixed $default default value to use when param is not set.
      * @return mixed the value of the configuration param
      */
-    public function get_param($name, $default = null)
+    public function getParam($name, $default = null)
     {
         if (self::$params === null) {
             self::$params = require(__DIR__ . '/config/main.php');
@@ -57,15 +76,10 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         return isset(self::$params[$name]) ? self::$params[$name] : $default;
     }
 
-    protected function tearDown()
-    {
-        parent::tearDown();
-    }
-
     /**
      * Destroys application in Yii::$app by setting it to null.
      */
-    protected function destroy_application()
+    protected function destroyApplication()
     {
         \Yii::$app = null;
     }
