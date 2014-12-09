@@ -41,7 +41,7 @@ class Module extends \yii\base\Module
     public $storage_web_path = null;
 
     /** @var int */
-    public $max_upload_file_size = 10; // в мегабайтах
+    public $max_upload_file_size = 10; // megabytes
 
     /**
      * @inheritdoc
