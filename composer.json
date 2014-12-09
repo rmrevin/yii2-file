@@ -1,0 +1,34 @@
+{
+  "name": "rmrevin/yii2-file",
+  "description": "Yii2 module for file management",
+  "keywords": [
+    "yii",
+    "file",
+    "upload"
+  ],
+  "type": "yii2-extension",
+  "license": "MIT",
+  "minimum-stability": "stable",
+  "support": {
+    "issues": "https://github.com/rmrevin/yii2-file/issues",
+    "source": "https://github.com/rmrevin/yii2-file"
+  },
+  "authors": [
+    {
+      "name": "Roman Revin",
+      "email": "xgismox@gmail.com",
+      "homepage": "http://rmrevin.ru/"
+    }
+  ],
+  "require": {
+    "php": ">=5.4.0",
+
+    "yiisoft/yii2": "2.0.*",
+    "yiisoft/yii2-imagine": "2.0.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "rmrevin\\yii\\module\\File\\": ""
+    }
+  }
+}
