@@ -25,4 +25,8 @@ tools:
         timeout: 2100 # Timeout in seconds.
 filter:
     excluded_paths:
+        - assets/*
+        - messages/*
+        - migrations/*
         - tests/*
+        - vendor/*
