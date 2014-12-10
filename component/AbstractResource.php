@@ -18,7 +18,7 @@ abstract class AbstractResource implements ResourceInterface
 {
 
     /**
-     * @param mixed $source
+     * @param string|boolean $source
      */
     public function __construct($source)
     {
@@ -34,7 +34,7 @@ abstract class AbstractResource implements ResourceInterface
     }
 
     /**
-     * @return bool|string
+     * @return string|false
      */
     public function moveToUpload()
     {

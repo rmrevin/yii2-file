@@ -145,7 +145,7 @@ class File extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return null|\rmrevin\yii\module\File\ImageWrapper
+     * @return \rmrevin\yii\module\File\ImageWrapper
      * @throws \Exception
      */
     public function image()

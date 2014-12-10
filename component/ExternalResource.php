@@ -62,7 +62,7 @@ class ExternalResource extends AbstractResource implements ResourceInterface
     }
 
     /**
-     * @return bool|string
+     * @return string|false
      */
     private function copyTempResource()
     {
