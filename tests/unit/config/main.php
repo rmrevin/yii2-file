@@ -5,12 +5,16 @@
  */
 
 return [
-	'id' => 'testapp',
-	'basePath' => realpath(__DIR__ . '/..'),
+    'id' => 'testapp',
+    'basePath' => realpath(__DIR__ . '/..'),
+    'aliases' => [
+        '@vendor/rmrevin/yii2-file' => realpath(__DIR__ . '/../../..'),
+    ],
+    'bootstrap' => [
+        '\rmrevin\yii\module\File\Bootstrap',
+    ],
     'modules' => [
-        'file' => [
-            'class' => '\rmrevin\yii\module\File\Module',
-        ]
+        'file' => '\rmrevin\yii\module\File\Module',
     ],
     'components' => [
         'db' => [

@@ -53,66 +53,57 @@ class Module extends \yii\base\Module
     {
         parent::init();
 
-        ini_set('upload_max_filesize', $this->max_upload_file_size . 'M');
-        ini_set('post_max_size', $this->max_upload_file_size . 'M');
-
         if ((int)ini_get('upload_max_filesize') < $this->max_upload_file_size) {
-            \Yii::warning(sprintf('Параметр `%s` в php.ini должен быть равен `%s`', 'upload_max_filesize',
+            \Yii::warning(sprintf('The parameter `%s` in php.ini must be equal to`%s`', 'upload_max_filesize',
                 $this->max_upload_file_size . 'M'), __METHOD__);
         }
 
         if ((int)ini_get('post_max_size') < $this->max_upload_file_size) {
-            \Yii::warning(sprintf('Параметр `%s` в php.ini должен быть равен `%s`', 'post_max_size',
+            \Yii::warning(sprintf('The parameter `%s` in php.ini must be equal to`%s`', 'post_max_size',
                 $this->max_upload_file_size . 'M'), __METHOD__);
         }
 
-        if (empty($this->storage_path) && !empty($this->storage_alias)) {
-            $this->storage_path = \Yii::getAlias($this->storage_alias);
-        }
-
-        if (empty($this->storage_web_path) && !empty($this->storage_web_alias)) {
-            $this->storage_web_path = \Yii::getAlias($this->storage_web_alias);
-        }
-
-        if (empty($this->upload_web_path) && !empty($this->upload_web_alias)) {
-            $this->upload_web_path = \Yii::getAlias($this->upload_web_alias);
-        }
-
-        if (empty($this->upload_path) && !empty($this->upload_alias)) {
-            $this->upload_path = \Yii::getAlias($this->upload_alias);
-        }
+        $this->reinitAliases();
 
         if (empty($this->upload_path)) {
-            throw new InvalidConfigException('Не удалось определить путь к директории с загруженными файлами (FileService::$upload_path).');
-        }
-
-        if (!file_exists($this->upload_path)) {
-            FileHelper::createDirectory($this->upload_path);
-        }
-
-        if (!is_readable($this->upload_path)) {
-            throw new \RuntimeException('Директория с загруженными файлами не доступна для чтения (FileService::$upload_path).');
-        }
-
-        if (!is_writable($this->upload_path)) {
-            throw new \RuntimeException('Директория с загруженными файлами не доступна для записи (FileService::$upload_path).');
+            throw new InvalidConfigException(\Yii::t('service-file', 'Unable to determine the path to the upload directory (FileService::$upload_path).'));
         }
 
         if (empty($this->storage_path)) {
-            throw new InvalidConfigException('Не удалось определить путь к директории с файловым кэшем (FileService::$storage_path).');
+            throw new InvalidConfigException(\Yii::t('service-file', 'Unable to determine the path to the storage directory (FileService::$storage_path).'));
         }
 
-        if (!file_exists($this->storage_path)) {
+        if (!file_exists($this->upload_path) || !is_dir($this->upload_path)) {
+            FileHelper::createDirectory($this->upload_path);
+        }
+
+        if (!file_exists($this->storage_path) || !is_dir($this->storage_path)) {
             FileHelper::createDirectory($this->storage_path);
         }
 
+        if (!is_readable($this->upload_path)) {
+            throw new \RuntimeException(\Yii::t('service-file', 'Upload directory not available for reading (FileService::$upload_path).'));
+        }
+
+        if (!is_writable($this->upload_path)) {
+            throw new \RuntimeException(\Yii::t('service-file', 'Upload directory not available for writing (FileService::$upload_path).'));
+        }
+
         if (!is_readable($this->storage_path)) {
-            throw new \RuntimeException('Директория с файловым кэшем не доступна для чтения (FileService::$storage_path).');
+            throw new \RuntimeException(\Yii::t('service-file', 'Storage directory not available for reading (FileService::$storage_path).'));
         }
 
         if (!is_writable($this->storage_path)) {
-            throw new \RuntimeException('Директория с файловым кэшем не доступна для записи (FileService::$storage_path).');
+            throw new \RuntimeException(\Yii::t('service-file', 'Storage directory not available for writing (FileService::$storage_path).'));
         }
+    }
+
+    public function reinitAliases()
+    {
+        $this->storage_path = \Yii::getAlias($this->storage_alias);
+        $this->storage_web_path = \Yii::getAlias($this->storage_web_alias);
+        $this->upload_web_path = \Yii::getAlias($this->upload_web_alias);
+        $this->upload_path = \Yii::getAlias($this->upload_alias);
     }
 
     /**

@@ -24,7 +24,7 @@ class InternalResource extends AbstractResource implements ResourceInterface
         $this->temp = $source;
 
         if (!file_exists($this->temp) || !is_file($this->temp)) {
-            throw new \RuntimeException('External resource not available');
+            throw new \RuntimeException('Internal resource not available');
         }
     }
 

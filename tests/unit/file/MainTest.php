@@ -17,7 +17,95 @@ class MainTest extends File\tests\unit\TestCase
 
     public function testMain()
     {
-        $this->assertInstanceOf('\rmrevin\yii\module\File\Module', File\Module::module());
+        $Module = File\Module::module();
+
+        $this->assertInstanceOf('\rmrevin\yii\module\File\Module', $Module);
+        $this->assertNotEmpty($Module->upload_alias);
+        $this->assertNotEmpty($Module->upload_path);
+        $this->assertNotEmpty($Module->upload_web_alias);
+        $this->assertNotEmpty($Module->upload_web_path);
+        $this->assertNotEmpty($Module->storage_alias);
+        $this->assertNotEmpty($Module->storage_path);
+        $this->assertNotEmpty($Module->storage_web_alias);
+        $this->assertNotEmpty($Module->storage_web_path);
+        $this->assertNotEmpty($Module->max_upload_file_size);
+
+        $this->assertTrue(file_exists($Module->upload_path));
+        $this->assertTrue(is_dir($Module->upload_path));
+        $this->assertTrue(file_exists($Module->storage_path));
+        $this->assertTrue(is_dir($Module->storage_path));
+    }
+
+    /**
+     * @expectedException \yii\base\InvalidConfigException
+     */
+    public function testBadUploadPath()
+    {
+        $Module = clone  File\Module::module();
+
+        $Module->upload_alias = null;
+        $Module->upload_path = null;
+        $Module->init();
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testNotReadableUploadPath()
+    {
+        $Module = clone File\Module::module();
+
+        $Module->upload_alias = '/root';
+        $Module->upload_path = '/root';
+        $Module->init();
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testNotWritableUploadPath()
+    {
+        $Module = clone  File\Module::module();
+
+        $Module->upload_alias = '/usr';
+        $Module->upload_alias = '/usr';
+        $Module->init();
+    }
+
+    /**
+     * @expectedException \yii\base\InvalidConfigException
+     */
+    public function testBadStoragePath()
+    {
+        $Module = clone File\Module::module();
+
+        $Module->storage_alias = null;
+        $Module->storage_path = null;
+        $Module->init();
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testNotReadableStoragePath()
+    {
+        $Module = clone File\Module::module();
+
+        $Module->storage_alias = '/root';
+        $Module->storage_path = '/root';
+        $Module->init();
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testNotWritableStoragePath()
+    {
+        $Module = clone File\Module::module();
+
+        $Module->storage_alias = '/usr';
+        $Module->storage_path = '/usr';
+        $Module->init();
     }
 
     /**
@@ -26,6 +114,68 @@ class MainTest extends File\tests\unit\TestCase
     public function testBadInternalResource()
     {
         new File\component\InternalResource('unknown file');
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testBadExternalResource()
+    {
+        new File\component\ExternalResource('unknown file');
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testBadMoveTempFile()
+    {
+        $file = \Yii::getAlias('@yiiunit/data/for-move.txt');
+        File\models\File::push(new File\tests\unit\component\FakeResource($file));
+    }
+
+    public function testModel()
+    {
+        $File = new File\models\File();
+        $this->assertInstanceOf('\rmrevin\yii\module\File\models\File', $File);
+
+        $FileNoImage = File\models\File::getNoImage();
+        $this->assertInstanceOf('\rmrevin\yii\module\File\models\File', $FileNoImage);
+        $this->assertTrue($FileNoImage->isImage());
+        $this->assertNotEmpty((string)$FileNoImage);
+        $this->assertNotEmpty($FileNoImage->getWebPath());
+        $this->assertNotEmpty($FileNoImage->getAbsolutePath());
+        $this->assertEquals($FileNoImage->getSha1(true), '32e4319511b2e71471dd4a92c770eae7d5bece79');
+        $this->assertEquals($FileNoImage->getSha1(false), '32e4319511b2e71471dd4a92c770eae7d5bece79');
+        $this->assertEquals($FileNoImage->getSize(true), 21967);
+        $this->assertEquals($FileNoImage->getSize(false), 21967);
+        $this->assertEquals($FileNoImage->getMime(true), 'image/png');
+        $this->assertEquals($FileNoImage->getMime(false), 'image/png');
+
+        $FileNoImage = File\models\File::getNoImage();
+        $this->assertInstanceOf('\rmrevin\yii\module\File\models\File', $FileNoImage);
+
+        $file = \Yii::getAlias('@yiiunit/data/text.txt');
+        $File = File\models\File::push(new File\component\InternalResource($file));
+        $this->assertInstanceOf('\rmrevin\yii\module\File\models\File', $File);
+        $this->assertFalse((bool)$File->image_bad);
+        $this->assertInstanceOf('\rmrevin\yii\module\File\ImageWrapper', $File->image());
+        $this->assertTrue((bool)$File->image_bad);
+
+        $File->refresh();
+
+        /** @var File\models\File $F */
+        $F = File\models\File::find()
+            ->byId($File->id)
+            ->one();
+
+        $this->assertEquals($F->getAbsolutePath(), $File->getAbsolutePath());
+
+        /** @var File\models\File $F */
+        $F = File\models\File::find()
+            ->bySha1($File->sha1)
+            ->one();
+
+        $this->assertEquals($F->getAbsolutePath(), $File->getAbsolutePath());
     }
 
     public function testExternalResource()
@@ -61,16 +211,41 @@ class MainTest extends File\tests\unit\TestCase
         $Image = $File->image();
 
         $this->assertInstanceOf('\rmrevin\yii\module\File\ImageWrapper', $Image);
-
-        return $Image;
     }
 
-    /**
-     * @depends testInternalResource
-     * @param \rmrevin\yii\module\File\ImageWrapper $Image
-     */
-    public function testManipulations(File\ImageWrapper $Image)
+    public function testUploadedResource()
     {
+        $file = \Yii::getAlias('@yiiunit/data/uploaded.txt');
+
+        $temp = tempnam(sys_get_temp_dir(), 'f');
+
+        copy($file, $temp);
+
+        $_FILES = [
+            'file' => [
+                'name' => 'uploaded.txt',
+                'type' => 'text/plain',
+                'tmp_name' => $temp,
+                'error' => 0,
+                'size' => filesize($file),
+            ],
+        ];
+
+        $UploadedFile = \yii\web\UploadedFile::getInstanceByName('file');
+        $Resource = new File\component\UploadedResource($UploadedFile);
+
+        $this->assertEquals($Resource->getMime(), 'text/plain');
+        $this->assertEquals($Resource->getSize(), 21);
+        $this->assertNotEmpty($Resource->getTemp());
+
+        $File = File\models\File::push($Resource);
+        $this->assertInstanceOf('\rmrevin\yii\module\File\models\File', $File);
+    }
+
+    public function testManipulations()
+    {
+        $Image = File\models\File::getNoImage()->image();
+
         list($absolute_path, $web_path) = $Image->crop(10, 20)->result;
 
         $this->assertNotEmpty($absolute_path);
@@ -130,7 +305,7 @@ class MainTest extends File\tests\unit\TestCase
 
         $this->assertNotEmpty($absolute_path);
         $this->assertNotEmpty($web_path);
-        $this->assertEquals($size[0], 190);
-        $this->assertEquals($size[1], 190);
+        $this->assertEquals($size[0], 552);
+        $this->assertEquals($size[1], 552);
     }
 }

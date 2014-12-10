@@ -37,8 +37,8 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     {
         parent::tearDown();
 
-//        FileHelper::removeDirectory(\Yii::$app->getModule('file')->upload_path);
-//        FileHelper::removeDirectory(\Yii::$app->getModule('file')->storage_path);
+        FileHelper::removeDirectory(\Yii::$app->getModule('file')->upload_path);
+        FileHelper::removeDirectory(\Yii::$app->getModule('file')->storage_path);
 
         $this->destroyApplication();
     }

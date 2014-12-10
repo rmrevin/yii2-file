@@ -50,6 +50,34 @@ class File extends \yii\db\ActiveRecord
     }
 
     /**
+     * @param bool $recalculate
+     * @return integer
+     */
+    public function getSize($recalculate = false)
+    {
+        return true === $recalculate ? filesize($this->getAbsolutePath()) : $this->size;
+    }
+
+    /**
+     * @param bool $recalculate
+     * @return string
+     * @throws \yii\base\InvalidConfigException.
+     */
+    public function getMime($recalculate = false)
+    {
+        return true === $recalculate ? FileHelper::getMimeType($this->getAbsolutePath()) : $this->mime;
+    }
+
+    /**
+     * @param bool $recalculate
+     * @return string
+     */
+    public function getSha1($recalculate = false)
+    {
+        return true === $recalculate ? sha1_file($this->getAbsolutePath()) : $this->sha1;
+    }
+
+    /**
      * @return string
      */
     public function getWebPath()
@@ -77,7 +105,7 @@ class File extends \yii\db\ActiveRecord
 
     /**
      * @param \rmrevin\yii\module\File\component\ResourceInterface $Resource
-     * @return self
+     * @return static
      * @throws \Exception
      */
     public static function push(\rmrevin\yii\module\File\component\ResourceInterface $Resource)
@@ -85,12 +113,12 @@ class File extends \yii\db\ActiveRecord
         $id = basename($Resource->getTemp());
         \Yii::beginProfile('pushing file `' . $id . '`', __METHOD__);
 
-        $NewModel = new self();
+        $NewModel = new static();
         $NewModel->path = $Resource->getTemp();
 
-        $Model = self::find()->bySha1($Resource->getSha1())->one();
+        $Model = static::find()->bySha1($Resource->getSha1())->one();
 
-        if ($Model instanceof self) {
+        if ($Model instanceof static) {
             $NewModel = $Model;
         } else {
             $result = $Resource->moveToUpload();
@@ -100,8 +128,7 @@ class File extends \yii\db\ActiveRecord
                 $NewModel->path = $result;
                 $NewModel->insert();
             } else {
-                throw new \RuntimeException(\Yii::t('service-file',
-                    'Failed to bring the resource directory of uploaded files'));
+                throw new \RuntimeException(\Yii::t('service-file', 'Failed to bring the resource directory of uploaded files.'));
             }
         }
         \Yii::endProfile('pushing file `' . $id . '`', __METHOD__);
@@ -110,11 +137,11 @@ class File extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return File
+     * @return static
      */
     public static function getNoImage()
     {
-        return self::push(new \rmrevin\yii\module\File\component\InternalResource(\Yii::getAlias(\rmrevin\yii\module\File\Module::module()->no_image_alias)));
+        return static::push(new \rmrevin\yii\module\File\component\InternalResource(\Yii::getAlias(\rmrevin\yii\module\File\Module::module()->no_image_alias)));
     }
 
     /**
@@ -129,9 +156,9 @@ class File extends \yii\db\ActiveRecord
         if ($this->isImage()) {
             $result = \rmrevin\yii\module\File\ImageWrapper::load($this);
         } else {
-            $File = self::getNoImage();
+            $File = static::getNoImage();
             $result = \rmrevin\yii\module\File\ImageWrapper::load($File);
-            $this->image_bad = 1;
+            $this->image_bad = true;
             $this->update();
         }
 
@@ -167,7 +194,7 @@ class File extends \yii\db\ActiveRecord
      */
     private function events()
     {
-        $this->on(self::EVENT_BEFORE_INSERT, function (ModelEvent $Event) {
+        $this->on(static::EVENT_BEFORE_INSERT, function (ModelEvent $Event) {
             /** @var static $Model */
             $Model = $Event->sender;
             $Model->size = filesize($Model->path);
