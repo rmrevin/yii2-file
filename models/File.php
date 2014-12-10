@@ -110,6 +110,14 @@ class File extends \yii\db\ActiveRecord
     }
 
     /**
+     * @return File
+     */
+    public static function getNoImage()
+    {
+        return self::push(new \rmrevin\yii\module\File\component\InternalResource(\Yii::getAlias(\rmrevin\yii\module\File\Module::module()->no_image_alias)));
+    }
+
+    /**
      * @return null|\rmrevin\yii\module\File\ImageWrapper
      * @throws \Exception
      */

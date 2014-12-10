@@ -43,6 +43,9 @@ class Module extends \yii\base\Module
     /** @var int */
     public $max_upload_file_size = 10; // megabytes
 
+    /** @var string */
+    public $no_image_alias = '@vendor/rmrevin/yii2-file/assets/no-image.png';
+
     /**
      * @inheritdoc
      */
