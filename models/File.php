@@ -128,6 +128,11 @@ class File extends \yii\db\ActiveRecord
         $result = null;
         if ($this->isImage()) {
             $result = \rmrevin\yii\module\File\ImageWrapper::load($this);
+        } else {
+            $File = self::getNoImage();
+            $result = \rmrevin\yii\module\File\ImageWrapper::load($File);
+            $this->image_bad = 1;
+            $this->update();
         }
 
         return $result;
