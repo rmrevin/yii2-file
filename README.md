@@ -5,6 +5,13 @@ Yii 2 module for file management
 [![Latest Unstable Version](https://poser.pugx.org/rmrevin/yii2-file/v/unstable.svg)](https://packagist.org/packages/rmrevin/yii2-file)
 [![Total Downloads](https://poser.pugx.org/rmrevin/yii2-file/downloads.svg)](https://packagist.org/packages/rmrevin/yii2-file)
 
+Code Status
+-----------
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/rmrevin/yii2-file/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/rmrevin/yii2-file/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/rmrevin/yii2-file/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/rmrevin/yii2-file/?branch=master)
+[![Travis CI Build Status](https://travis-ci.org/rmrevin/yii2-file.svg)](https://travis-ci.org/rmrevin/yii2-file)
+[![Dependency Status](https://www.versioneye.com/user/projects/54119b799e16229fe00000da/badge.svg)](https://www.versioneye.com/user/projects/54119b799e16229fe00000da)
+
 Installation
 ------------
 Add in `composer.json`:
