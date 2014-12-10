@@ -53,15 +53,9 @@ class Module extends \yii\base\Module
     {
         parent::init();
 
-        if ((int)ini_get('upload_max_filesize') < $this->max_upload_file_size) {
-            \Yii::warning(sprintf('The parameter `%s` in php.ini must be equal to`%s`', 'upload_max_filesize',
-                $this->max_upload_file_size . 'M'), __METHOD__);
-        }
+        $this->checkIniSizeParam('upload_max_filesize');
 
-        if ((int)ini_get('post_max_size') < $this->max_upload_file_size) {
-            \Yii::warning(sprintf('The parameter `%s` in php.ini must be equal to`%s`', 'post_max_size',
-                $this->max_upload_file_size . 'M'), __METHOD__);
-        }
+        $this->checkIniSizeParam('post_max_size');
 
         $this->reinitAliases();
 
@@ -73,13 +67,9 @@ class Module extends \yii\base\Module
             throw new InvalidConfigException(\Yii::t('service-file', 'Unable to determine the path to the storage directory (FileService::$storage_path).'));
         }
 
-        if (!file_exists($this->upload_path) || !is_dir($this->upload_path)) {
-            FileHelper::createDirectory($this->upload_path);
-        }
+        $this->createDirectory($this->upload_path);
 
-        if (!file_exists($this->storage_path) || !is_dir($this->storage_path)) {
-            FileHelper::createDirectory($this->storage_path);
-        }
+        $this->createDirectory($this->storage_path);
 
         if (!is_readable($this->upload_path)) {
             throw new \RuntimeException(\Yii::t('service-file', 'Upload directory not available for reading (FileService::$upload_path).'));
@@ -112,6 +102,27 @@ class Module extends \yii\base\Module
     public static function module()
     {
         return \Yii::$app->getModule(static::MODULE);
+    }
+
+    /**
+     * @param string $path
+     */
+    private function createDirectory($path)
+    {
+        if (!file_exists($path) || !is_dir($path)) {
+            FileHelper::createDirectory($path);
+        }
+    }
+
+    /**
+     * @param string $param
+     */
+    private function checkIniSizeParam($param)
+    {
+        if ((int)ini_get($param) < $this->max_upload_file_size) {
+            \Yii::warning(sprintf('The parameter `%s` in php.ini must be equal to`%s`', $param,
+                $this->max_upload_file_size . 'M'), __METHOD__);
+        }
     }
 
     const MODULE = 'file';
