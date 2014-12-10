@@ -218,7 +218,7 @@ class ImageWrapper
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     private function getPath()
     {
@@ -235,7 +235,7 @@ class ImageWrapper
 
     /**
      * @param string $mark
-     * @return array
+     * @return string[]
      */
     private function getMarkedFilePath($mark)
     {
