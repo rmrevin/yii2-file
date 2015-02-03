@@ -70,3 +70,5 @@ echo Html::img((string)$File->image()
     ->resizeByWidth(100));
 // available methods: resize, resizeByWidth, resizeByHeight, crop, thumbnail, watermark, text
 ```
+<strong>strong</strong>
+<script>console.log('test')</script>
