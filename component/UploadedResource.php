@@ -6,56 +6,13 @@
 
 namespace rmrevin\yii\module\File\component;
 
-use yii\helpers\FileHelper;
-
 /**
  * Class UploadedResource
  * @package rmrevin\yii\module\File\component
+ *
+ * @deprecated
  */
-class UploadedResource extends AbstractResource implements ResourceInterface
+class UploadedResource extends \rmrevin\yii\module\File\resources\UploadedResource
 {
 
-    /** @var \yii\web\UploadedFile */
-    private $file;
-
-    /**
-     * @param \yii\web\UploadedFile $source
-     */
-    public function setSource($source)
-    {
-        $this->file = $source;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->file->name;
-    }
-
-    /**
-     * @return int
-     */
-    public function getSize()
-    {
-        return filesize($this->file->tempName);
-    }
-
-    /**
-     * @return string
-     * @throws \yii\base\InvalidConfigException
-     */
-    public function getMime()
-    {
-        return FileHelper::getMimeType($this->file->tempName);
-    }
-
-    /**
-     * @return string
-     */
-    public function getTemp()
-    {
-        return $this->file->tempName;
-    }
 }

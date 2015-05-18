@@ -104,11 +104,11 @@ class File extends \yii\db\ActiveRecord
     }
 
     /**
-     * @param \rmrevin\yii\module\File\component\ResourceInterface $Resource
+     * @param \rmrevin\yii\module\File\resources\ResourceInterface $Resource
      * @return static
      * @throws \Exception
      */
-    public static function push(\rmrevin\yii\module\File\component\ResourceInterface $Resource)
+    public static function push(\rmrevin\yii\module\File\resources\ResourceInterface $Resource)
     {
         $id = basename($Resource->getTemp());
         \Yii::beginProfile('pushing file `' . $id . '`', __METHOD__);
@@ -141,7 +141,10 @@ class File extends \yii\db\ActiveRecord
      */
     public static function getNoImage()
     {
-        return static::push(new \rmrevin\yii\module\File\component\InternalResource(\Yii::getAlias(\rmrevin\yii\module\File\Module::module()->no_image_alias)));
+        $image = \Yii::getAlias(\rmrevin\yii\module\File\Module::module()->no_image_alias);
+        $Resource = new \rmrevin\yii\module\File\resources\InternalResource($image);
+
+        return static::push($Resource);
     }
 
     /**

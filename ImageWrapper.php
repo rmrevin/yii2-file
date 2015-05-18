@@ -18,24 +18,25 @@ use yii\helpers\StringHelper;
  * Class ImageWrapper
  * @package rmrevin\yii\module\File
  */
-class ImageWrapper
+class ImageWrapper extends \yii\base\Object
 {
+
+    /** @var \rmrevin\yii\module\File\models\File */
+    public $File = null;
 
     /** @var array */
     public $result = [null, null];
-
-    /** @var \rmrevin\yii\module\File\models\File */
-    private $File = null;
 
     /** @var array */
     private $mark = [];
 
     /**
      * @param \rmrevin\yii\module\File\models\File $File
+     * @return self
      */
-    private function __construct(File $File)
+    public static function load(File $File)
     {
-        $this->File = $File;
+        return new self(['File' => $File]);
     }
 
     /**
@@ -63,15 +64,6 @@ class ImageWrapper
         }
 
         \Yii::endProfile('manipulating with file `' . $this->File->id . '`', 'services\File\models\File');
-    }
-
-    /**
-     * @param \rmrevin\yii\module\File\models\File $File
-     * @return self
-     */
-    public static function load(File $File)
-    {
-        return new self($File);
     }
 
     /**

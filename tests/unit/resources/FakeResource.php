@@ -4,15 +4,13 @@
  * @author Roman Revin http://phptime.ru
  */
 
-namespace rmrevin\yii\module\File\tests\unit\component;
-
-use rmrevin\yii\module\File\component\InternalResource;
+namespace rmrevin\yii\module\File\tests\unit\resources;
 
 /**
  * Class FakeResource
- * @package rmrevin\yii\module\File\tests\unit\component
+ * @package rmrevin\yii\module\File\tests\unit\resources
  */
-class FakeResource extends InternalResource
+class FakeResource extends \rmrevin\yii\module\File\resources\InternalResource
 {
 
     /**

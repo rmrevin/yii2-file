@@ -19,7 +19,7 @@ class MainTest extends File\tests\unit\TestCase
     {
         $Module = File\Module::module();
 
-        $this->assertInstanceOf('\rmrevin\yii\module\File\Module', $Module);
+        $this->assertInstanceOf(File\Module::className(), $Module);
         $this->assertNotEmpty($Module->upload_alias);
         $this->assertNotEmpty($Module->upload_path);
         $this->assertNotEmpty($Module->upload_web_alias);
@@ -130,16 +130,16 @@ class MainTest extends File\tests\unit\TestCase
     public function testBadMoveTempFile()
     {
         $file = \Yii::getAlias('@yiiunit/data/for-move.txt');
-        File\models\File::push(new File\tests\unit\component\FakeResource($file));
+        File\models\File::push(new File\tests\unit\resources\FakeResource($file));
     }
 
     public function testModel()
     {
         $File = new File\models\File();
-        $this->assertInstanceOf('\rmrevin\yii\module\File\models\File', $File);
+        $this->assertInstanceOf(File\models\File::className(), $File);
 
         $FileNoImage = File\models\File::getNoImage();
-        $this->assertInstanceOf('\rmrevin\yii\module\File\models\File', $FileNoImage);
+        $this->assertInstanceOf(File\models\File::className(), $FileNoImage);
         $this->assertTrue($FileNoImage->isImage());
         $this->assertNotEmpty((string)$FileNoImage);
         $this->assertNotEmpty($FileNoImage->getWebPath());
@@ -152,13 +152,13 @@ class MainTest extends File\tests\unit\TestCase
         $this->assertEquals($FileNoImage->getMime(false), 'image/png');
 
         $FileNoImage = File\models\File::getNoImage();
-        $this->assertInstanceOf('\rmrevin\yii\module\File\models\File', $FileNoImage);
+        $this->assertInstanceOf(\rmrevin\yii\module\File\models\File::className(), $FileNoImage);
 
         $file = \Yii::getAlias('@yiiunit/data/text.txt');
-        $File = File\models\File::push(new File\component\InternalResource($file));
-        $this->assertInstanceOf('\rmrevin\yii\module\File\models\File', $File);
+        $File = File\models\File::push(new File\resources\InternalResource($file));
+        $this->assertInstanceOf(File\models\File::className(), $File);
         $this->assertFalse((bool)$File->image_bad);
-        $this->assertInstanceOf('\rmrevin\yii\module\File\ImageWrapper', $File->image());
+        $this->assertInstanceOf(File\ImageWrapper::className(), $File->image());
         $this->assertTrue((bool)$File->image_bad);
 
         $File->refresh();
@@ -180,7 +180,7 @@ class MainTest extends File\tests\unit\TestCase
 
     public function testExternalResource()
     {
-        $Resource = new File\component\ExternalResource('https://www.google.ru/images/srpr/logo11w.png');
+        $Resource = new File\resources\ExternalResource('https://www.google.ru/images/srpr/logo11w.png');
 
         $this->assertEquals($Resource->getMime(), 'image/png');
         $this->assertEquals($Resource->getSize(), 14022);
@@ -188,11 +188,11 @@ class MainTest extends File\tests\unit\TestCase
 
         $File = File\models\File::push($Resource);
 
-        $this->assertInstanceOf('\rmrevin\yii\module\File\models\File', $File);
+        $this->assertInstanceOf(File\models\File::className(), $File);
 
         $Image = $File->image();
 
-        $this->assertInstanceOf('\rmrevin\yii\module\File\ImageWrapper', $Image);
+        $this->assertInstanceOf(File\ImageWrapper::className(), $Image);
     }
 
     public function testInternalResource()
@@ -206,11 +206,11 @@ class MainTest extends File\tests\unit\TestCase
 
         $File = File\models\File::push($Resource);
 
-        $this->assertInstanceOf('\rmrevin\yii\module\File\models\File', $File);
+        $this->assertInstanceOf(File\models\File::className(), $File);
 
         $Image = $File->image();
 
-        $this->assertInstanceOf('\rmrevin\yii\module\File\ImageWrapper', $Image);
+        $this->assertInstanceOf(File\ImageWrapper::className(), $Image);
     }
 
     public function testUploadedResource()
@@ -232,14 +232,14 @@ class MainTest extends File\tests\unit\TestCase
         ];
 
         $UploadedFile = \yii\web\UploadedFile::getInstanceByName('file');
-        $Resource = new File\component\UploadedResource($UploadedFile);
+        $Resource = new File\resources\UploadedResource($UploadedFile);
 
         $this->assertEquals($Resource->getMime(), 'text/plain');
         $this->assertEquals($Resource->getSize(), 21);
         $this->assertNotEmpty($Resource->getTemp());
 
         $File = File\models\File::push($Resource);
-        $this->assertInstanceOf('\rmrevin\yii\module\File\models\File', $File);
+        $this->assertInstanceOf(File\models\File::className(), $File);
     }
 
     public function testManipulations()

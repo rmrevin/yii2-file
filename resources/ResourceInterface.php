@@ -4,13 +4,11 @@
  * @author Revin Roman http://phptime.ru
  */
 
-namespace rmrevin\yii\module\File\component;
+namespace rmrevin\yii\module\File\resources;
 
 /**
  * Interface ResourceInterface
- * @package rmrevin\yii\module\File\component
- *
- * @deprecated
+ * @package rmrevin\yii\module\File\resources
  */
 interface ResourceInterface
 {

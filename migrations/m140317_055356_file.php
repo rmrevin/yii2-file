@@ -2,7 +2,7 @@
 
 use yii\db\Schema;
 
-class m140317_055356_file_init extends \yii\db\Migration
+class m140317_055356_file extends \yii\db\Migration
 {
 
     public function up()
@@ -14,16 +14,16 @@ class m140317_055356_file_init extends \yii\db\Migration
         }
 
         $this->createTable('{{%file}}', [
-                'id' => Schema::TYPE_PK,
-                'mime' => Schema::TYPE_STRING . ' NOT NULL',
-                'size' => Schema::TYPE_BIGINT . ' NOT NULL DEFAULT 0',
-                'name' => Schema::TYPE_STRING . ' NOT NULL',
-                'origin_name' => Schema::TYPE_STRING . ' NOT NULL',
-                'sha1' => Schema::TYPE_STRING . '(40) NOT NULL',
-                'image_bad' => Schema::TYPE_BOOLEAN . ' NOT NULL DEFAULT 0',
-            ], $tableOptions);
+            'id' => Schema::TYPE_PK,
+            'mime' => Schema::TYPE_STRING . ' NOT NULL',
+            'size' => Schema::TYPE_BIGINT . ' NOT NULL DEFAULT 0',
+            'name' => Schema::TYPE_STRING . ' NOT NULL',
+            'origin_name' => Schema::TYPE_STRING . ' NOT NULL',
+            'sha1' => Schema::TYPE_STRING . '(40) NOT NULL',
+            'image_bad' => Schema::TYPE_BOOLEAN . ' NOT NULL DEFAULT 0',
+        ], $tableOptions);
 
-        $this->createIndex('index_sha', '{{%file}}', 'sha1');
+        $this->createIndex('idx_sha', '{{%file}}', ['sha1']);
     }
 
     public function down()
