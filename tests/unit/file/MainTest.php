@@ -292,10 +292,6 @@ class MainTest extends File\tests\unit\TestCase
         $this->assertEquals($size[0], 120);
         $this->assertEquals($size[1], 120);
 
-        list($absolute_path, $web_path) = $Image->text('test', \Yii::getAlias('@yiiunit/data/DejaVuSans.ttf'))->result;
-        $this->assertNotEmpty($absolute_path);
-        $this->assertNotEmpty($web_path);
-
         list($absolute_path, $web_path) = $Image->watermark(\Yii::getAlias('@yiiunit/data/watermark.png'))->result;
         $this->assertNotEmpty($absolute_path);
         $this->assertNotEmpty($web_path);
