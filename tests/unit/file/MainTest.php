@@ -180,10 +180,10 @@ class MainTest extends File\tests\unit\TestCase
 
     public function testExternalResource()
     {
-        $Resource = new File\resources\ExternalResource('https://www.google.ru/images/srpr/logo11w.png');
+        $Resource = new File\resources\ExternalResource('https://en.wikipedia.org/static/images/project-logos/enwiki.png');
 
         $this->assertEquals($Resource->getMime(), 'image/png');
-        $this->assertEquals($Resource->getSize(), 14022);
+        $this->assertEquals($Resource->getSize(), 20616);
         $this->assertNotEmpty($Resource->getTemp());
 
         $File = File\models\File::push($Resource);

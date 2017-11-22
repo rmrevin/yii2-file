@@ -26,6 +26,9 @@
     "yiisoft/yii2": "~2.0",
     "yiisoft/yii2-imagine": "~2.1"
   },
+  "require-dev": {
+    "phpunit/phpunit": "^5.7"
+  },
   "autoload": {
     "psr-4": {
       "rmrevin\\yii\\module\\File\\": ""
@@ -33,6 +36,14 @@
   },
   "extra": {
     "bootstrap": "rmrevin\\yii\\module\\File\\Bootstrap"
+  },
+  "config": {
+    "bin-dir": "bin",
+    "sort-packages": true,
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "notify-on-install": false,
+    "discard-changes": "stash"
   },
   "repositories": [
     {
